@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	default-autowire="byName"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+		
+		
+	<!-- 配置扫描器：context（配置多个包时，同时写多个即可） -->
+	<context:component-scan base-package="org.test.dao.impl"></context:component-scan>
+	<!-- springIoc容器在启动的时候会根据base-package在该包中扫描所有类，查找这些类是否有@component("studentDao")注解，如果有，则将该类加入IOC容器 -->
+	
+	<!-- 配置数据库相关-事务 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://3306/db_toolwear"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value=""></property>
+		<property name="maxActive" value="10"></property>
+		<property name="maxIdle" value="6"></property>
+	</bean>
+	
+	
+	<!-- 配置事务管理器 -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- 增加对事务的支持 -->
+	<tx:annotation-driven transaction-manager="txManager"/>
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 该文件产生的所有对象，被Spring放入了一个称为IOC容器的地方 -->
+	<!-- bean: id对象的名字 class:对象的类型
+		property:为class所对的对象属性赋值
+			name:属性名
+			value:属性值
+		注：Spring在本实例中干了两件事：1.创建对象 2.对象属性赋值（通过这种形式代替了传统的new和set）
+	 -->
+	<bean id="student" class="org.test.entity.Student">
+		<property name="stuNo" value="2"></property>
+		<!-- 可以在value属性中赋值（对一些特殊符号只能使用实体表达式），也同样可以在value标签中赋值 （在实体中赋值的时候不但可以用实体表达式还能用）<![CDATA[符号表达式]]>-->
+		<!-- <property name="stuName">
+			<value></value>
+		</property> 
+		<property name="stuName" value="">
+		</property>-->
+		<property name="stuName">
+			<null></null>
+		</property>
+		<property name="stuAge" value="24"></property>
+	</bean>
+	
+	<bean id="javaCourse" class="org.test.newinstance.JavaCourse"></bean>
+	<bean id="htmlCourse" class="org.test.newinstance.HtmlCourse"></bean>
+	<!-- 
+	<bean id="teacher" class="org.test.entity.Teacher">
+		<property name="name" value="zs"></property>
+		<property name="age" value="23"></property>
+	</bean>
+	 
+	<bean id="course" class="org.test.entity.Course">
+		<property name="courseName" value="math"></property>
+		<property name="courseHour" value="48"></property>
+		<property name="teacher" value="teacher"></property>
+	</bean>
+	
+	<bean id="teacher" class="org.test.entity.Teacher">
+		<constructor-arg name="name" value="zs"></constructor-arg>
+		<constructor-arg name="age" value="23"></constructor-arg>
+	</bean>
+	 
+	<bean id="course" class="org.test.entity.Course">
+		<constructor-arg name="courseName" value="java"></constructor-arg>
+		<constructor-arg name="courseHour" value="100"></constructor-arg>
+		<constructor-arg name="teacher" ref="teacher"></constructor-arg>
+	</bean>-->
+	<bean id="teacher" class="org.test.entity.Teacher" p:age="24" p:name="ls">
+		
+	</bean>
+	<!-- 
+	<bean id="course" class="org.test.entity.Course" p:courseHour="200" p:courseName="shuxue" p:teacher-ref="teacher">
+		
+	</bean> -->
+	
+	<!-- autowire="byName":
+			Course类中有一个属性是ref类型的teacher，且bean中恰好存在一个id值为teacher且已经装配好的bean，则系统会将teacher自动装配进Course中去 -->
+	<bean id="course" class="org.test.entity.Course"><!-- 同样可以用byType/constructor实现自动装配  -->
+		<property name="courseName" value="math"></property>
+		<property name="courseHour" value="48"></property>
+	</bean>
+	
+	<bean id="collectionDemo" class="org.test.entity.AllCollectionType">
+		<!-- set,list,array,props,map 配置方式，其中set，list，array的配置方式可以混着用<list><array><set>-->
+		<property name="list">
+			<list>
+				<value>足球1</value>
+				<value>足球2</value>
+				<value>足球3</value>
+			</list>
+		</property>
+		<property name="array">
+			<array>
+				<value>array1</value>
+				<value>array2</value>
+				<value>array3</value>
+			</array>
+		</property>
+		<property name="map">
+			<map>
+				<entry>
+					<key>
+						<value>football1</value>
+					</key>
+					<value>zuqiu1</value>
+				</entry>
+				<entry>
+					<key>
+						<value>football2</value>
+					</key>
+					<value>zuqiu2</value>
+				</entry>
+			</map>
+		</property>
+		<property name="set">
+			<set>
+				<value>set1</value>
+				<value>set2</value>
+				<value>set3</value>
+			</set>
+		</property>
+		<property name="props">
+			<props>
+				<prop key="foot1">zuqiu1</prop>
+				<prop key="foot1">zuqiu1</prop>
+				<prop key="foot1">zuqiu1</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- 
+	<bean id="studentDao" class="org.test.dao.impl.StudentDaoImpl"></bean>
+	 -->
+	 <bean id="studentDao" class="org.test.dao.impl.StudentDaoImpl"></bean>
+	 
+	 <bean id="studentService" class="org.test.service.impl.StudentServiceImpl">
+	 	<property name="studentDao" ref="studentDao"></property>
+	 </bean>
+	 
+	 
+</beans>
