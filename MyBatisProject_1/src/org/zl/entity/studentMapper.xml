@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 	<!-- namespace:mapper文件的路径 -->
+ 	<mapper namespace="org.zl.entity.Student">  
+ 		<!-- 后续通过namespace.id来定位sql语句 -->
+ 		<select id="queryStudentByStuNo" parameterType="int" resultType="org.zl.entity.Student">
+ 			select * from student where stuNo = #{stuNo}
+ 		</select>
+ 	</mapper>
